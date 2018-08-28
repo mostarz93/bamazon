@@ -37,58 +37,61 @@ function mgmtChoices() {
                 showLowInventory();
                 break;
             case "add to inventory":
-            connection.query("SELECT * FROM products", function (err, res) {
-                console.log("==========================================================\n");
-                console.table(res);
-                console.log("\n=========================================================")
-            })
+                connection.query("SELECT * FROM products", function (err, data) {
+                    console.log("\n==========================================================\n");
+                    console.table(data);
+                    console.log("\n=========================================================")
+                    
+                    inquire.prompt([
+                        {
+                            type: "input",
+                            message: "what item would you like to restock? (choose ID #)",
+                            name: "productID"
+                        },
+                        {
+                            type: "input",
+                            message: "how much would you like to restock?",
+                            name: "restockCount"
+                        }
+                    ]).then(function (response) {
+                        // console.log("working");
+                        // console.log(response.productID);
+                        // console.log(response.restockCount);
+                        var newStock = parseInt(response.restockCount) + data[parseInt(response.productID) - 1].stock_quantity;
+                        addToInventory(newStock, response.productID);
+                    });
+                });
+                break;
+            case "add product":
                 inquire.prompt([
                     {
                         type: "input",
-                        message: "what item would you like to restock? (choose ID #)",
-                        name: "productID"
+                        message: "what is the name of the product?",
+                        name: "productName"
                     },
                     {
                         type: "input",
-                        message: "how much would you like to restock?",
-                        name: "restockCount"
+                        message: "what department?",
+                        name: "productDept"
+                    },
+                    {
+                        type: "input",
+                        message: "what price?",
+                        name: "productPrice"
+                    },
+                    {
+                        type: "input",
+                        message: "how much would you like to stock?",
+                        name: "productStock"
                     }
-                ]).then (function(res){
-                    console.log("working");
-                    console.log(res.productID);
-                    console.log(res.restockCount);
-                    addToInventory(res.restockCount, res.productID);
+                ]).then(function (res) {
+                    connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)", [res.productName, res.productDept, res.productPrice, res.productStock], function () {
+                        showInventory();
+                    })
                 })
                 break;
-                case "add product":
-                inquire.prompt ([
-                {
-                    type: "input",
-                    message: "what is the name of the product?",
-                    name: "productName"
-                },
-                {
-                    type: "input",
-                    message: "what department?",
-                    name: "productDept"
-                },
-                {
-                    type: "input",
-                    message: "what price?",
-                    name: "productPrice"
-                },
-                {
-                    type: "input",
-                    message: "how much would you like to stock?",
-                    name: "productStock"
-                }
-            ]).then (function(res){
-                connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)", [res.productName, res.productDept, res.productPrice, res.productStock], function(){
-                    showInventory();
-                })
-            })
         }
-    })
+    });
 }
 
 
@@ -110,9 +113,9 @@ function showLowInventory() {
 }
 
 function addToInventory(quantity, id) {
-    connection.query("UPDATE products SET stock_quantity = ? WHERE id = ?", [quantity, id], function(){
+    connection.query("UPDATE products SET stock_quantity = ? WHERE id = ?", [quantity, id], function () {
         showInventory();
-        mgmtChoices();
+
     })
 }
 
