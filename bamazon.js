@@ -58,13 +58,14 @@ function displayChoice (i){
     connection.query("SELECT * FROM products", function(err, res){
         if (err) throw err;
         stockQuantity = res[i].stock_quantity;
+        productPrice = res[i].price;
         
         console.log("\nitem selected: " + res[i].product_name + "\nquanity: " + quanity);
         console.log("Stock: " + stockQuantity + '\n');
         if (quanity > stockQuantity) {
             console.log("sorry, don't have that many");
         } else if (quanity <= stockQuantity){
-            connection.query("UPDATE products SET stock_quantity = ? WHERE id = ?", [stockQuantity - quanity, item],  function(){
+            connection.query("UPDATE products SET stock_quantity = ?, product_sales = product_sales + ? WHERE id = ?", [stockQuantity - quanity, productPrice * quanity, item],  function(){
                     console.log("new " + res[i].product_name + " quantity: " + (stockQuantity - quanity));
                     showInventory();
                     console.log("you spent $" + quanity * res[i].price + '\n')

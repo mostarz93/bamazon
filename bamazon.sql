@@ -24,3 +24,19 @@ VALUE
 ("colon", "digestive", 40000, 25),
 ("appendix", "nervouse", 15, 2000),
 ("pancreas", "circulatory", 14000, 30 );
+
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("urinary", 2000),
+  ("nervous", 1000),
+  ("digestive", 500),
+  ("respiratory", 3000),
+  ("circulatory", 350),
+  ("endocrine", 0),
+  ("reproductive", 1000),
+  ("sensory", 400);
+  
+  SELECT * FROM departments;
+
+
+  
