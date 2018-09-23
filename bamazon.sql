@@ -38,5 +38,5 @@ VALUES ("urinary", 2000),
   
   SELECT * FROM departments;
 
-
-  
+ ALTER TABLE products
+ADD product_sales DECIMAL(10,2) DEFAULT 0;

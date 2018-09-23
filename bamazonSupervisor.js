@@ -35,7 +35,7 @@ function promptSupervisor () {
         {
             type: "list",
             message: "What would you like to do?",
-            choices: ["View Product Sales by Department", "Create New Department", "Quit"],
+            choices: ["View Product Sales by Department", "Create New Department", "Remove Department", "Quit"],
             name:"choices"
         }
     ]).then(function(val){
@@ -45,6 +45,9 @@ function promptSupervisor () {
           }
           else if (val.choices === "Create New Department") {
             addDepartment();
+          } else if(val.choices === "Remove Department"){
+            showDepartments();
+            removeDepartment();
           }
           else {
             console.log("Goodbye!");
@@ -63,6 +66,34 @@ function viewSales() {
       }
     );
   }
+
+function showDepartments (){
+  connection.query("SELECT * FROM departments", function (err, res) {
+    console.log("\n==========================================================\n");
+    console.table(res);
+    console.log("\n=========================================================")
+})}
+
+function removeDepartment(){
+  
+  inquire.prompt([
+    
+    {
+      type: "input",
+      message: "what department would you like to remove? (enter ID number)",
+      name: "departmentChoice"
+    }
+   
+  ]).then(function(res){
+    
+    connection.query("DELETE FROM departments WHERE department_id = ?", res.departmentChoice, function(){
+      console.log ("DEPARTMENT DELETED");
+      showDepartments();
+      promptSupervisor();
+    })
+  })
+ 
+}
 
 function addDepartment(){
     inquire

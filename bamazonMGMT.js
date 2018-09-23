@@ -25,7 +25,7 @@ function mgmtChoices() {
         {
             type: "list",
             message: "what would you like to do?",
-            choices: ["view inventory", "view low inventory", "add to inventory", "add product"],
+            choices: ["view inventory", "view low inventory", "add to inventory", "add product", "remove product"],
             name: "mgmtChoices"
         }
     ]).then(function (res) {
@@ -63,6 +63,7 @@ function mgmtChoices() {
                 });
                 break;
             case "add product":
+                
                 inquire.prompt([
                     {
                         type: "input",
@@ -90,6 +91,19 @@ function mgmtChoices() {
                     })
                 })
                 break;
+            case "remove product":
+            inquire.prompt([
+                {
+                    type: "input",
+                    message: "which produt would you like remove? (give product ID number)",
+                    name:"productName"
+                }
+            ]).then(function(res){
+                connection.query("DELETE FROM products WHERE id = ?", res.productName, function(){
+                    console.log("PRODUCT DELETED");
+                    showInventory();
+                })
+            })
         }
     });
 }
@@ -119,6 +133,6 @@ function addToInventory(quantity, id) {
     })
 }
 
-mgmtChoices();
+showInventory();
 
 
